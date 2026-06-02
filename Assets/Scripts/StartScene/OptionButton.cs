@@ -51,29 +51,9 @@ public class Button2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (!this.directorSC.isOptionOpened)
         {
             this.directorSC.isOptionOpened = true;
-            StartCoroutine(SlideDown());
+            this.optionPaperTf.anchoredPosition = Vector3.zero;
             this.audio.PlayOneShot(this.pageSF);
             Debug.Log("설정");
         }
-    }
-
-    IEnumerator SlideDown() //창 소환 함수
-    {
-        Vector3 startPos = this.optionPaperTf.anchoredPosition;
-        Vector3 endPos = new Vector3(0, 0, 0);
-        float elapsedTime = 0f;
-
-        while (elapsedTime < 0.2f)
-        {
-            elapsedTime += Time.deltaTime;
-
-            float progress = elapsedTime / 0.2f;
-
-            this.optionPaperTf.anchoredPosition = Vector3.Lerp(startPos, endPos, progress);
-
-            yield return null; 
-        }
-
-        this.optionPaperTf.anchoredPosition = endPos;
     }
 }
