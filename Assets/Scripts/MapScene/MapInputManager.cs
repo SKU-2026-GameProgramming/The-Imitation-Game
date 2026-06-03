@@ -1,13 +1,41 @@
+using TMPro;
 using UnityEngine;
 
 public class ProvinceClickHandler : MonoBehaviour
 {
     public LayerMask provinceLayer;
+    public AudioClip clickSF;
+
+    GameObject provinceUI;
+    RectTransform provinceUIRT;
+
+    GameObject krName;
+    TextMeshProUGUI krNameText;
+    GameObject engName;
+    TextMeshProUGUI engNameText;
+    GameObject pow;
+    TextMeshProUGUI powText;
+
+    private void Start()
+    {
+        provinceUI = GameObject.Find("ProvinceUI");
+        provinceUIRT = provinceUI.GetComponent<RectTransform>();
+
+        krName = GameObject.Find("KRNameText");
+        krNameText = krName.GetComponent<TextMeshProUGUI>();
+        engName = GameObject.Find("NameText");
+        engNameText = engName.GetComponent<TextMeshProUGUI>();
+        pow = GameObject.Find("PowerText");
+        powText = pow.GetComponent<TextMeshProUGUI>();
+    }
 
     private void Update()
     {
         if (!Input.GetMouseButtonDown(0))
             return;
+
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.PlayOneShot(clickSF);
 
         Vector2 mouseWorldPosition =
             Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -22,15 +50,18 @@ public class ProvinceClickHandler : MonoBehaviour
 
         if (hit.collider == null)
         {
-            Debug.Log("영역 감지 실패");
+            provinceUIRT.anchoredPosition = new Vector3(0, 750, 0);
             return;
         }
 
-        Province province =
-            hit.collider.GetComponent<Province>();
+        Province province = hit.collider.GetComponent<Province>();
 
         if (province == null)
+        {
+            provinceUIRT.anchoredPosition = new Vector3(0, 750, 0);
             return;
+        }
+
 
         if (MapManager.Instance == null)
         {
@@ -39,5 +70,11 @@ public class ProvinceClickHandler : MonoBehaviour
         }
 
         MapManager.Instance.OnProvinceClicked(province);
+
+        provinceUIRT.anchoredPosition = new Vector3(Input.mousePosition.x - 750, Input.mousePosition.y - 425, 0);
+
+        krNameText.text = province.nodeKRName;
+        engNameText.text = province.nodeName;
+        powText.text = "투입 전력: ";
     }
 }
