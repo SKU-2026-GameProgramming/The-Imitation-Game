@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Button2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    AudioSource audio;
+    AudioSource aud;
     public AudioClip clickSF, pageSF;
 
     GameObject menuPointer;
@@ -22,7 +22,7 @@ public class Button2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void Start()
     {
-        this.audio = GetComponent<AudioSource>();
+        this.aud = GetComponent<AudioSource>();
 
         this.menuPointer = GameObject.Find("MenuPointer");
         this.menuPointerTf = this.menuPointer.GetComponent<RectTransform>();
@@ -52,7 +52,7 @@ public class Button2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             this.directorSC.isOptionOpened = true;
             this.optionPaperTf.anchoredPosition = Vector3.zero;
-            this.audio.PlayOneShot(this.pageSF);
+            this.aud.PlayOneShot(this.pageSF);
             Debug.Log("설정");
         }
     }

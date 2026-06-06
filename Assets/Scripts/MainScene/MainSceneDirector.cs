@@ -1,12 +1,14 @@
 using TMPro;
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class MainSceneDirector : MonoBehaviour
 {
     AudioSource bgm;
 
     GameObject optionPaper;
     RectTransform optionPaperTf;
+
+    public bool isUIOpened = false;
 
     float time = 0.0f;
 
