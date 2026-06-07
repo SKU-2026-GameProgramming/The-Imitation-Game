@@ -11,7 +11,8 @@ public class Province : MonoBehaviour
 
     //점령전 시 정보
     public int importance; //점령 시 가치
-    public bool isOwned = false; //점령 여부(뺏기면 False)
+    public string grade; //점령 가치 등급
+    public bool isOwned; //점령 여부(뺏기면 False)
     public bool isAttackable = false; //공격 가능 여부
     public bool isDefendable = false; //방어 가능 여부
     public int power = 0; //점령(또는 수비)할 때 투입할 전력의 양

@@ -6,7 +6,10 @@ public class ButtonManager : MonoBehaviour
 {
     RectTransform msgBox;
     RectTransform confirmBox;
-    MapManager mm;
+    RectTransform cipherUI;
+    GameObject map;
+    MapManager mm; 
+    MainSceneDirector director;
 
     AudioSource aud;
     public AudioClip clickSF;
@@ -16,7 +19,10 @@ public class ButtonManager : MonoBehaviour
     {
         msgBox = GameObject.Find("ProvinceUI").GetComponent<RectTransform>();
         confirmBox = GameObject.Find("BattleConfirmUI").GetComponent<RectTransform>();
+        map = GameObject.Find("Map");
+        cipherUI = GameObject.Find("CipherUI").GetComponent<RectTransform>();
         mm = GameObject.Find("Provinces").GetComponent<MapManager>();
+        director = GameObject.Find("GameDirector").GetComponent<MainSceneDirector>();
         aud = GetComponent<AudioSource>();
     }
 
@@ -44,6 +50,10 @@ public class ButtonManager : MonoBehaviour
     public void OnConfirmBattleClick()
     {
         aud.PlayOneShot(clickSF);
+
+        cipherUI.anchoredPosition = new Vector3(-1955, 1055, 0);
+        director.isUIOpened = false;
+        map.transform.position = new Vector3(0, 10, 0);
         confirmBox.anchoredPosition = new Vector3(732, 766, 0);
         mm.ConfirmBattle();
     }

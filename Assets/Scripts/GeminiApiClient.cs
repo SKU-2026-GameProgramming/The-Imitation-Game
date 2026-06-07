@@ -1,60 +1,41 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+// [추가] Newtonsoft.Json 네임스페이스 로드
+using Newtonsoft.Json;
 
 /// Gemini REST API에 프롬프트를 전송하고 생성된 텍스트 응답을 Unity 코루틴으로 반환하는 클라이언트입니다.
 public sealed class GeminiApiClient : MonoBehaviour
 {
-    /// Gemini API 키를 조회할 때 사용하는 환경 변수 이름입니다.
     private const string GeminiApiKeyEnvironmentVariable = "GEMINI_API_KEY";
 
-    /// 요청을 보낼 Gemini 모델 이름입니다.
     [Header("Gemini API")]
     [Tooltip("Gemini 모델명")]
     [SerializeField] private string model = "gemini-2.5-flash";
 
-    
-    /// 환경 변수 대신 Inspector에서 임시로 입력할 Gemini API 키입니다.
     [Tooltip("일회성 로컬 테스트용 API 키입니다. 가능하면 환경 변수를 사용하세요.")]
     [SerializeField] private string apiKey = "";
 
-    
-    /// Gemini 모델 전체 응답 방식을 지시하는 시스템 인스트럭션입니다.
     [Header("Prompt")]
     [Tooltip("Gemini 요청 본문의 systemInstruction 값입니다. 비워두면 전송하지 않습니다.")]
     [TextArea(2, 8)]
     [SerializeField] private string systemInstruction = "";
 
-    
-    /// 생성 응답의 무작위성과 창의성을 조절하는 온도 값입니다.
     [Header("Generation")]
-    [Tooltip(@"응답 무작위성
-               0.0 ~ 0.3 : 매우 보수적
-               0.7       : 일반적인 창의성
-               1.0 이상  : 더 다양하고 실험적")]
+    [Tooltip(@"응답 무작위성")]
     [Range(0f, 2f)]
     [SerializeField] private float temperature = 0.7f;
 
-    
-    /// Gemini가 생성할 수 있는 최대 출력 토큰 수입니다.
     [Tooltip("응답 길이 제한")]
     [Range(1, 8192)]
-    [SerializeField] private int maxOutputTokens = 1024;
+    [SerializeField] private int maxOutputTokens = 16384; // 여유 있게 늘려두는 것을 권장합니다.
 
-    
-    /// Gemini API 요청이 완료될 때까지 기다리는 최대 시간(초)입니다.
     [Tooltip("응답 제한 시간")]
     [Range(1, 120)]
     [SerializeField] private int timeoutSeconds = 30;
 
-    
-    /// Gemini 모델에 프롬프트를 보내고 생성된 텍스트 응답을 비동기 코루틴으로 전달합니다.
-    /// 
-    /// <param name="prompt">Gemini 모델에 전달할 사용자 프롬프트입니다.</param>
-    /// <param name="onSuccess">응답 텍스트를 성공적으로 추출했을 때 호출되는 콜백입니다.</param>
-    /// <param name="onError">입력 검증, API 키 확인, 요청 또는 응답 파싱에 실패했을 때 호출되는 콜백입니다.</param>
-    /// <returns>시작된 Unity 코루틴입니다. 프롬프트나 API 키가 유효하지 않으면 <c>null</c>을 반환합니다.</returns>
     public Coroutine GenerateContent(string prompt, Action<string> onSuccess, Action<string> onError = null)
     {
         if (string.IsNullOrWhiteSpace(prompt))
@@ -74,20 +55,11 @@ public sealed class GeminiApiClient : MonoBehaviour
         return StartCoroutine(SendGenerateContentRequest(prompt, resolvedApiKey, onSuccess, onError));
     }
 
-    
-    /// 데모 UI에서 입력한 API 키를 Inspector 직렬화 필드에 저장합니다.
-    /// 
-    /// <param name="value">데모 실행 중 사용할 Gemini API 키입니다.</param>
     public void SetApiKeyForDemo(string value)
     {
         apiKey = value?.Trim() ?? "";
     }
 
-    
-    /// Gemini API 키를 환경 변수에서 먼저 찾고, 없으면 Inspector에 입력된 값을 사용합니다.
-    /// 
-    /// <param name="resolvedApiKey">검증과 공백 제거를 마친 Gemini API 키입니다.</param>
-    /// <returns>사용 가능한 API 키를 찾았으면 <c>true</c>, 없으면 <c>false</c>입니다.</returns>
     private bool TryGetApiKey(out string resolvedApiKey)
     {
         var environmentApiKey = Environment.GetEnvironmentVariable(GeminiApiKeyEnvironmentVariable);
@@ -107,14 +79,6 @@ public sealed class GeminiApiClient : MonoBehaviour
         return false;
     }
 
-    
-    /// Gemini REST API가 요구하는 JSON 요청 본문을 만들고 생성 요청을 전송합니다.
-    /// 
-    /// <param name="prompt">Gemini 모델에 전달할 사용자 프롬프트입니다.</param>
-    /// <param name="resolvedApiKey">환경 변수 또는 Inspector에서 확인한 Gemini API 키입니다.</param>
-    /// <param name="onSuccess">응답 텍스트를 성공적으로 추출했을 때 호출되는 콜백입니다.</param>
-    /// <param name="onError">요청 실패 또는 응답 파싱 실패 시 오류 메시지와 함께 호출되는 콜백입니다.</param>
-    /// <returns>Unity 코루틴 실행을 위한 IEnumerator입니다.</returns>
     private System.Collections.IEnumerator SendGenerateContentRequest(
         string prompt,
         string resolvedApiKey,
@@ -126,14 +90,24 @@ public sealed class GeminiApiClient : MonoBehaviour
 
         using var request = new UnityWebRequest(endpoint, UnityWebRequest.kHttpVerbPOST);
         request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
-        request.downloadHandler = new DownloadHandlerBuffer();
+
+        // [변경] 일반 버퍼 대신 대용량 가차없이 받아내는 바이트 핸들러 지정
+        var chunkHandler = new DownloadHandlerBuffer();
+        request.downloadHandler = chunkHandler;
+
         request.timeout = timeoutSeconds;
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("x-goog-api-key", resolvedApiKey);
 
         yield return request.SendWebRequest();
 
-        var responseBody = request.downloadHandler?.text ?? "";
+        // 수신 완료 후 강제로 한번 더 인코딩 버퍼 동기화
+        string responseBody = "";
+        if (chunkHandler.data != null && chunkHandler.data.Length > 0)
+        {
+            responseBody = Encoding.UTF8.GetString(chunkHandler.data);
+        }
+
         if (request.result != UnityWebRequest.Result.Success)
         {
             onError?.Invoke(FormatError(request.responseCode, request.error, responseBody));
@@ -150,11 +124,7 @@ public sealed class GeminiApiClient : MonoBehaviour
         onSuccess?.Invoke(responseText);
     }
 
-    
-    /// Gemini REST API 요청 본문 JSON을 만듭니다.
-    /// 
-    /// <param name="prompt">Gemini 모델에 전달할 사용자 프롬프트입니다.</param>
-    /// <returns>Gemini 생성 요청 JSON 문자열입니다.</returns>
+    /// [수정] JsonUtility 대신 Newtonsoft.Json을 사용하여 안전하게 빌드합니다.
     private string BuildGenerateContentRequestJson(string prompt)
     {
         var contents = new[]
@@ -162,94 +132,115 @@ public sealed class GeminiApiClient : MonoBehaviour
             new GeminiContent
             {
                 role = "user",
-                parts = new[]
-                {
-                    new GeminiPart { text = prompt }
-                }
+                parts = new[] { new GeminiPart { text = prompt } }
             }
         };
 
-        var generationConfig = new GeminiGenerationConfig
+        // [핵심 변경] responseMimeType을 application/json으로 강제 지정
+        var generationConfig = new
         {
             temperature = temperature,
-            maxOutputTokens = maxOutputTokens,
-            candidateCount = 1
+            //maxOutputTokens = maxOutputTokens,
+            candidateCount = 1,
+            responseMimeType = "application/json",
+
+            // 구글 서버에 우리가 받을 JSON의 구조(설계도)를 명확하게 주입합니다.
+            responseSchema = new
+            {
+                type = "OBJECT",
+                properties = new
+                {
+                    attacks = new
+                    {
+                        type = "ARRAY",
+                        items = new
+                        {
+                            type = "OBJECT",
+                            properties = new
+                            {
+                                nodeID = new { type = "INTEGER" },
+                                power = new { type = "INTEGER" }
+                            },
+                            required = new[] { "nodeID", "power" }
+                        }
+                    },
+                    defends = new
+                    {
+                        type = "ARRAY",
+                        items = new
+                        {
+                            type = "OBJECT",
+                            properties = new
+                            {
+                                nodeID = new { type = "INTEGER" },
+                                power = new { type = "INTEGER" }
+                            },
+                            required = new[] { "nodeID", "power" }
+                        }
+                    }
+                },
+                required = new[] { "attacks", "defends" }
+            }
         };
 
         var trimmedSystemInstruction = systemInstruction?.Trim();
+
         if (string.IsNullOrWhiteSpace(trimmedSystemInstruction))
         {
-            return JsonUtility.ToJson(new GeminiGenerateRequest
+            var requestBody = new { contents = contents, generationConfig = generationConfig };
+            return JsonConvert.SerializeObject(requestBody);
+        }
+        else
+        {
+            var requestBody = new
             {
+                systemInstruction = new GeminiSystemInstruction
+                {
+                    parts = new[] { new GeminiPart { text = trimmedSystemInstruction } }
+                },
                 contents = contents,
                 generationConfig = generationConfig
-            });
+            };
+            return JsonConvert.SerializeObject(requestBody);
         }
-
-        return JsonUtility.ToJson(new GeminiGenerateRequestWithSystemInstruction
-        {
-            systemInstruction = new GeminiSystemInstruction
-            {
-                parts = new[]
-                {
-                    new GeminiPart { text = trimmedSystemInstruction }
-                }
-            },
-            contents = contents,
-            generationConfig = generationConfig
-        });
     }
 
-    
-    /// Gemini 응답 JSON에서 모든 후보의 텍스트 파트를 순서대로 이어 붙입니다.
-    /// 
-    /// <param name="responseBody">Gemini API가 반환한 원본 JSON 응답 본문입니다.</param>
-    /// <returns>추출한 응답 텍스트입니다. 파싱에 실패하거나 텍스트가 없으면 빈 문자열을 반환합니다.</returns>
+    /// [수정] 대용량 줄바꿈 특수문자가 섞여도 절대 터지지 않도록 Newtonsoft.Json 파싱 적용
     private static string ExtractText(string responseBody)
     {
-        GeminiGenerateResponse response;
         try
         {
-            response = JsonUtility.FromJson<GeminiGenerateResponse>(responseBody);
-        }
-        catch (ArgumentException)
-        {
-            return "";
-        }
+            // 유연하게 dynamic(혹은 JObject) 스타일로 파싱 후 추출
+            var response = JsonConvert.DeserializeObject<GeminiGenerateResponse>(responseBody);
 
-        if (response?.candidates == null || response.candidates.Length == 0)
-        {
-            return "";
-        }
-
-        var builder = new StringBuilder();
-        foreach (var candidate in response.candidates)
-        {
-            var parts = candidate?.content?.parts;
-            if (parts == null)
+            if (response?.candidates == null || response.candidates.Length == 0)
             {
-                continue;
+                return "";
             }
 
-            foreach (var part in parts)
+            var builder = new StringBuilder();
+            foreach (var candidate in response.candidates)
             {
-                if (!string.IsNullOrEmpty(part?.text))
+                var parts = candidate?.content?.parts;
+                if (parts == null) continue;
+
+                foreach (var part in parts)
                 {
-                    builder.Append(part.text);
+                    if (!string.IsNullOrEmpty(part?.text))
+                    {
+                        builder.Append(part.text);
+                    }
                 }
             }
+            return builder.ToString().Trim();
         }
-
-        return builder.ToString().Trim();
+        catch (Exception ex)
+        {
+            Debug.LogError($"[JSON 파싱 에러] 원인: {ex.Message}");
+            return "";
+        }
     }
 
-    
-    /// Gemini 오류 응답을 우선 파싱하고, 실패하면 HTTP 오류와 원본 응답 본문을 포함한 메시지를 만듭니다.
-    /// 
-    /// <param name="responseCode">HTTP 응답 코드입니다.</param>
-    /// <param name="requestError">UnityWebRequest가 보고한 오류 메시지입니다.</param>
-    /// <param name="responseBody">서버가 반환한 원본 응답 본문입니다.</param>
-    /// <returns>로그 또는 UI에 표시할 수 있는 오류 메시지입니다.</returns>
     private static string FormatError(long responseCode, string requestError, string responseBody)
     {
         var message = string.IsNullOrWhiteSpace(requestError) ? "요청에 실패했습니다." : requestError;
@@ -258,157 +249,26 @@ public sealed class GeminiApiClient : MonoBehaviour
             return $"HTTP {responseCode}: {message}";
         }
 
-        GeminiErrorEnvelope errorEnvelope = null;
         try
         {
-            errorEnvelope = JsonUtility.FromJson<GeminiErrorEnvelope>(responseBody);
+            var errorEnvelope = JsonConvert.DeserializeObject<GeminiErrorEnvelope>(responseBody);
+            if (!string.IsNullOrWhiteSpace(errorEnvelope?.error?.message))
+            {
+                return $"HTTP {responseCode}: {errorEnvelope.error.status} - {errorEnvelope.error.message}";
+            }
         }
-        catch (ArgumentException)
-        {
-            // 일부 실패 응답은 Gemini JSON 오류 형식이 아닌 일반 텍스트나 HTML일 수 있습니다.
-        }
-
-        if (!string.IsNullOrWhiteSpace(errorEnvelope?.error?.message))
-        {
-            return $"HTTP {responseCode}: {errorEnvelope.error.status} - {errorEnvelope.error.message}";
-        }
+        catch { }
 
         return $"HTTP {responseCode}: {message}\n{responseBody}";
     }
 
-    
-    /// Gemini 생성 요청 JSON의 최상위 DTO입니다.
-    [Serializable]
-    private sealed class GeminiGenerateRequest
-    {
-        
-        /// 모델에 전달할 대화 콘텐츠 목록입니다.
-        public GeminiContent[] contents;
-
-        
-        /// 생성 방식과 출력 제한을 정의하는 설정입니다.
-        public GeminiGenerationConfig generationConfig;
-    }
-
-    
-    /// 시스템 인스트럭션을 포함하는 Gemini 생성 요청 JSON의 최상위 DTO입니다.
-    [Serializable]
-    private sealed class GeminiGenerateRequestWithSystemInstruction
-    {
-        
-        /// 모델 전체 응답 방식을 지시하는 시스템 인스트럭션입니다.
-        public GeminiSystemInstruction systemInstruction;
-
-        
-        /// 모델에 전달할 대화 콘텐츠 목록입니다.
-        public GeminiContent[] contents;
-
-        
-        /// 생성 방식과 출력 제한을 정의하는 설정입니다.
-        public GeminiGenerationConfig generationConfig;
-    }
-
-    
-    /// Gemini 텍스트 생성 설정 DTO입니다.
-    [Serializable]
-    private sealed class GeminiGenerationConfig
-    {
-        
-        /// 응답의 무작위성과 다양성을 조절하는 값입니다.
-        public float temperature;
-
-        
-        /// 생성 가능한 최대 출력 토큰 수입니다.
-        public int maxOutputTokens;
-
-        
-        /// 요청할 응답 후보 개수입니다.
-        public int candidateCount;
-    }
-
-    
-    /// Gemini 생성 응답 JSON의 최상위 DTO입니다.
-    [Serializable]
-    private sealed class GeminiGenerateResponse
-    {
-        
-        /// Gemini가 반환한 응답 후보 목록입니다.
-        public GeminiCandidate[] candidates;
-    }
-
-    
-    /// Gemini 응답 후보 하나를 나타내는 DTO입니다.
-    [Serializable]
-    private sealed class GeminiCandidate
-    {
-        
-        /// 후보 응답의 실제 콘텐츠입니다.
-        public GeminiContent content;
-
-        
-        /// 모델이 응답 생성을 종료한 이유입니다.
-        public string finishReason;
-    }
-
-    
-    /// Gemini 요청 또는 응답의 대화 콘텐츠 DTO입니다.
-    [Serializable]
-    private sealed class GeminiContent
-    {
-        
-        /// 콘텐츠 작성자의 역할입니다.
-        public string role;
-
-        
-        /// 콘텐츠를 구성하는 파트 목록입니다.
-        public GeminiPart[] parts;
-    }
-
-    
-    /// Gemini 시스템 인스트럭션 DTO입니다.
-    [Serializable]
-    private sealed class GeminiSystemInstruction
-    {
-        
-        /// 시스템 인스트럭션을 구성하는 텍스트 파트 목록입니다.
-        public GeminiPart[] parts;
-    }
-
-    
-    /// Gemini 콘텐츠 안의 개별 텍스트 파트 DTO입니다.
-    [Serializable]
-    private sealed class GeminiPart
-    {
-        
-        /// 모델에 전달하거나 모델이 반환한 텍스트입니다.
-        public string text;
-    }
-
-    
-    /// Gemini 오류 응답 JSON의 최상위 DTO입니다.
-    [Serializable]
-    private sealed class GeminiErrorEnvelope
-    {
-        
-        /// Gemini API가 반환한 오류 상세 정보입니다.
-        public GeminiError error;
-    }
-
-    
-    /// Gemini API 오류 상세 DTO입니다.
-    [Serializable]
-    private sealed class GeminiError
-    {
-        
-        /// HTTP 또는 API 수준의 오류 코드입니다.
-        public int code;
-
-        
-        /// 사람이 읽을 수 있는 오류 메시지입니다.
-        public string message;
-
-        
-        /// Gemini API가 제공하는 오류 상태 문자열입니다.
-        public string status;
-    }
+    // --- DTO 구조 유지 (대소문자 매핑을 위해 Newtonsoft 호환 구조) ---
+    [Serializable] private sealed class GeminiGenerationConfig { public float temperature; public int maxOutputTokens; public int candidateCount; }
+    [Serializable] private sealed class GeminiGenerateResponse { public GeminiCandidate[] candidates; }
+    [Serializable] private sealed class GeminiCandidate { public GeminiContent content; public string finishReason; }
+    [Serializable] private sealed class GeminiContent { public string role; public GeminiPart[] parts; }
+    [Serializable] private sealed class GeminiSystemInstruction { public GeminiPart[] parts; }
+    [Serializable] private sealed class GeminiPart { public string text; }
+    [Serializable] private sealed class GeminiErrorEnvelope { public GeminiError error; }
+    [Serializable] private sealed class GeminiError { public int code; public string message; public string status; }
 }

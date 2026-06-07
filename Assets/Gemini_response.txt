@@ -1,0 +1,1 @@
+﻿{"attacks":[{"nodeID":9,"power":175},{"nodeID":7,"power":175},{"nodeID":8,"power":250}],"defends":[{"nodeID":28,"power":100},{"nodeID":16,"power":100},{"nodeID":21,"power":100},{"nodeID":22,"power":100}]}

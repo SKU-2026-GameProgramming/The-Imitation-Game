@@ -26,8 +26,7 @@ public class CipherButton : MonoBehaviour
         if (!director.isUIOpened)
         {
             aud.PlayOneShot(clickSF);
-            cipherUI.anchoredPosition = new Vector3(-450, 0, 0);
-            director.isUIOpened = true;
+            cipherUI.anchoredPosition = new Vector3(-470, 0, 0);
         }
     }
 }

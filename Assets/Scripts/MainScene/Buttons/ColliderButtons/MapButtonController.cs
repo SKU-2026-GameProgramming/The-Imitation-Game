@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MapButtonController : MonoBehaviour
 {
     GameObject map;
+    Image cipherUI;
     MainSceneDirector director;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -21,10 +23,10 @@ public class MapButtonController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!director.isUIOpened)
+        if (!director.isShifterOpened)
         {
-            map.transform.position = new Vector3(-0.03f, -0.4f, 0);
             director.isUIOpened = true;
+            map.transform.position = new Vector3(-0.03f, -0.4f, 0);
         }
     }
 }

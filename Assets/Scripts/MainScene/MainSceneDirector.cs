@@ -9,6 +9,7 @@ public class MainSceneDirector : MonoBehaviour
     RectTransform optionPaperTf;
 
     public bool isUIOpened = false;
+    public bool isShifterOpened = false;
 
     float time = 0.0f;
 

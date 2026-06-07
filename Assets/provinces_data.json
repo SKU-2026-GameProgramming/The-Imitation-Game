@@ -1,0 +1,558 @@
+﻿{
+    "provinces": [
+        {
+            "nodeID": 0,
+            "nodeName": "Paris ",
+            "adjacentNodeID": [
+                1,
+                2
+            ],
+            "grade": "S",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 1,
+            "nodeName": "Melun",
+            "adjacentNodeID": [
+                0,
+                2,
+                5,
+                8,
+                10
+            ],
+            "grade": "A",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 2,
+            "nodeName": "Versailles",
+            "adjacentNodeID": [
+                0,
+                1,
+                3,
+                5
+            ],
+            "grade": "A",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 3,
+            "nodeName": "Evreux",
+            "adjacentNodeID": [
+                2,
+                4,
+                5
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 4,
+            "nodeName": "Rouen",
+            "adjacentNodeID": [
+                3,
+                5
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 5,
+            "nodeName": "Amines",
+            "adjacentNodeID": [
+                1,
+                2,
+                3,
+                4,
+                6,
+                8
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 6,
+            "nodeName": "Arras",
+            "adjacentNodeID": [
+                5,
+                7
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 7,
+            "nodeName": "Lille",
+            "adjacentNodeID": [
+                6,
+                8,
+                16,
+                17
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": true,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 8,
+            "nodeName": "Laon",
+            "adjacentNodeID": [
+                1,
+                5,
+                7,
+                9,
+                10,
+                16
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": true,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 9,
+            "nodeName": "Ardennes",
+            "adjacentNodeID": [
+                8,
+                10,
+                11,
+                16,
+                21
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": true,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 10,
+            "nodeName": "Marne",
+            "adjacentNodeID": [
+                1,
+                8,
+                9,
+                11
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 11,
+            "nodeName": "Muese",
+            "adjacentNodeID": [
+                9,
+                10,
+                12,
+                13,
+                14,
+                21
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": true,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 12,
+            "nodeName": "Epinal",
+            "adjacentNodeID": [
+                11,
+                13,
+                15
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 13,
+            "nodeName": "Nancy",
+            "adjacentNodeID": [
+                11,
+                12,
+                14,
+                15
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 14,
+            "nodeName": "Metz",
+            "adjacentNodeID": [
+                11,
+                13,
+                15,
+                21,
+                22,
+                28
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": true,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 15,
+            "nodeName": "Strasbourg",
+            "adjacentNodeID": [
+                12,
+                13,
+                14,
+                23,
+                28
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": false,
+            "isAttackableByEnemy": true,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 16,
+            "nodeName": "Bruxelles",
+            "adjacentNodeID": [
+                7,
+                8,
+                9,
+                17,
+                18,
+                19,
+                20,
+                21
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": true,
+            "power": 0
+        },
+        {
+            "nodeID": 17,
+            "nodeName": "brugge",
+            "adjacentNodeID": [
+                7,
+                16,
+                18
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": true,
+            "power": 0
+        },
+        {
+            "nodeID": 18,
+            "nodeName": "Gent",
+            "adjacentNodeID": [
+                16,
+                17,
+                19
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 19,
+            "nodeName": "Hasselt",
+            "adjacentNodeID": [
+                16,
+                18,
+                20,
+                21
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 20,
+            "nodeName": "Liege",
+            "adjacentNodeID": [
+                16,
+                19,
+                21,
+                22,
+                29,
+                34
+            ],
+            "grade": "A",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 21,
+            "nodeName": "Namur",
+            "adjacentNodeID": [
+                9,
+                11,
+                14,
+                16,
+                20,
+                22
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": true,
+            "power": 0
+        },
+        {
+            "nodeID": 22,
+            "nodeName": "Luxembourg",
+            "adjacentNodeID": [
+                14,
+                20,
+                21,
+                28,
+                29
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": true,
+            "power": 0
+        },
+        {
+            "nodeID": 23,
+            "nodeName": "Freiburg",
+            "adjacentNodeID": [
+                15,
+                24,
+                26,
+                27
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": true,
+            "power": 0
+        },
+        {
+            "nodeID": 24,
+            "nodeName": "Tubingen",
+            "adjacentNodeID": [
+                23,
+                25,
+                26
+            ],
+            "grade": "C",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 25,
+            "nodeName": "Neuulm",
+            "adjacentNodeID": [
+                24,
+                26,
+                27
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 26,
+            "nodeName": "stuttgart",
+            "adjacentNodeID": [
+                23,
+                24,
+                25,
+                27
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 27,
+            "nodeName": "Wiesbaden",
+            "adjacentNodeID": [
+                23,
+                25,
+                26,
+                28,
+                30
+            ],
+            "grade": "A",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 28,
+            "nodeName": "Saarbrucken",
+            "adjacentNodeID": [
+                14,
+                15,
+                22,
+                27,
+                29,
+                30
+            ],
+            "grade": "B",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": true,
+            "power": 0
+        },
+        {
+            "nodeID": 29,
+            "nodeName": "Mainz",
+            "adjacentNodeID": [
+                20,
+                22,
+                28,
+                30,
+                34,
+                35
+            ],
+            "grade": "A",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 30,
+            "nodeName": "Kassel",
+            "adjacentNodeID": [
+                27,
+                28,
+                29,
+                31,
+                35
+            ],
+            "grade": "A",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 31,
+            "nodeName": "Paderborn",
+            "adjacentNodeID": [
+                30,
+                32,
+                35
+            ],
+            "grade": "S",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 32,
+            "nodeName": "Bielefeld",
+            "adjacentNodeID": [
+                31,
+                33,
+                35
+            ],
+            "grade": "S",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 33,
+            "nodeName": "Munster",
+            "adjacentNodeID": [
+                32,
+                34,
+                35
+            ],
+            "grade": "S",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 34,
+            "nodeName": "Koln",
+            "adjacentNodeID": [
+                19,
+                20,
+                29,
+                33,
+                35
+            ],
+            "grade": "A",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        },
+        {
+            "nodeID": 35,
+            "nodeName": "Dortmund",
+            "adjacentNodeID": [
+                29,
+                30,
+                31,
+                32,
+                33,
+                34
+            ],
+            "grade": "S",
+            "isOwnedByEnemy": true,
+            "isAttackableByEnemy": false,
+            "isDefendableByEnemy": false,
+            "power": 0
+        }
+    ]
+}

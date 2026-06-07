@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,18 +16,24 @@ public class MapManager : MonoBehaviour
     public bool graphInitialized = false; //그래프 초기화 여부
     public Sprite[] sprites = new Sprite[4];  //영토 상태 스프라이트 
     public int availablePower = 1000;
-    int maxEnemyAttack = 3;
+    int day = 1;
     int maxPlayerAttack;
     int remainingAttack;
 
     CipherManager cm;
 
+    [SerializeField] private GeminiRunner gr;
+
     GameObject powerText;
     GameObject remainingAttackText;
+    public GameObject[] hints = new GameObject[3];
+    TextMeshProUGUI dayText;
 
     private void Awake()
     {
         cm = GameObject.Find("CipherUI").GetComponent<CipherManager>();
+        gr = GameObject.Find("AI_API_Director").GetComponent<GeminiRunner>();
+        dayText = GameObject.Find("DayText").GetComponent<TextMeshProUGUI>();
         powerText = GameObject.Find("AllPowerText");
         remainingAttackText = GameObject.Find("RemainingAttackText");
 
@@ -36,7 +44,6 @@ public class MapManager : MonoBehaviour
         UpdateProvincesState();
         UpdateDTO();
         graphInitialized = true;
-        AllocateEnemyPower();
     }
 
     private void Update()
@@ -50,65 +57,37 @@ public class MapManager : MonoBehaviour
         ResolveBattle();
         ResetState();
         UpdateProvincesState();
-        AllocateEnemyPower();
+        day++;
+        dayText.text = "Day " + day.ToString();
+        hints[day - 2].gameObject.SetActive(true);
+        UpdateDTO();
     }
 
-    //적(AI)가 공격/방어 영토 결정
-    public void AllocateEnemyPower()
+    private void OnEnable()
     {
-        const int TOTAL_ENEMY_POWER = 1000;
-        int remainPower = TOTAL_ENEMY_POWER;
+        // GeminiRunner가 파싱을 끝내면 내 내부 함수(OnEnemyAiCalculated)를 실행하라고 등록
+        gr.OnResponseParsed += AllocateEnemyPower;
+    }
 
-        foreach (Province p in provinces)
-            p.enemyPower = 0;
+    private void OnDisable()
+    {
+        gr.OnResponseParsed -= AllocateEnemyPower;
+    }
+    //적(AI)가 공격/방어 영토 결정
+    public void AllocateEnemyPower(GeminiResponse aiResult)
+    {
+        Debug.Log("AI 연산 결과가 매니저로 도착했습니다!");
+        cm.Encrypt(aiResult);
 
-        // 플레이어 기준:
-        // isDefendable = 적 입장 공격 가능 지역
-        // isAttackable = 적 입장 방어 가능 지역
-        List<Province> attackCandidates = new List<Province>();
-        List<Province> defenseCandidates = new List<Province>();
-
-        foreach (Province p in provinces)
+        // 실제 게임 월드에 부대 배치 실행 규칙 돌리기
+        foreach (var attack in aiResult.attacks)
         {
-            if (p.isDefendable)
-                attackCandidates.Add(p);
-
-            if (p.isAttackable)
-                defenseCandidates.Add(p);
+            provinces[attack.nodeID].enemyPower = attack.power;
         }
 
-        // 공격 후보 섞기
-        for (int i = 0; i < attackCandidates.Count; i++)
+        foreach (var defend in aiResult.defends)
         {
-            int r = Random.Range(i, attackCandidates.Count);
-            (attackCandidates[i], attackCandidates[r]) =
-                (attackCandidates[r], attackCandidates[i]);
-        }
-
-        List<Province> selectedTargets = attackCandidates
-            .GetRange(0, Mathf.Min(maxEnemyAttack, attackCandidates.Count));
-
-        //암호 생성 함수 호출
-        int[] keys = new int[maxEnemyAttack];
-        for (int i = 0; i < maxEnemyAttack; i++)
-            keys[i] = Random.Range(0, 25);
-        cm.Encrypt(selectedTargets, keys, maxEnemyAttack);
-
-        List<Province> candidates = new List<Province>();
-        candidates.AddRange(selectedTargets);
-        candidates.AddRange(defenseCandidates);
-
-        if (candidates.Count == 0)
-            return;
-
-        while (remainPower > 0)
-        {
-            Province target = candidates[Random.Range(0, candidates.Count)];
-
-            int allocate = Random.Range(1, Mathf.Min(101, remainPower + 1));
-
-            target.enemyPower += allocate;
-            remainPower -= allocate;
+            provinces[defend.nodeID].enemyPower = defend.power;
         }
     }
 
@@ -307,16 +286,26 @@ public class MapManager : MonoBehaviour
                 e.adjacentNodeID = new int[p.adjacentProvinces.Length];
                 for (int j = 0; j < p.adjacentProvinces.Length; j++)
                     e.adjacentNodeID[j] = p.adjacentProvinces[j].nodeID;
-                e.importance = p.importance;
+                e.grade = p.grade;
             }
 
             e.isOwnedByEnemy = !p.isOwned;
             e.isAttackableByEnemy = p.isDefendable;
             e.isDefendableByEnemy = p.isAttackable;
             e.power = 0;
+
+            Debug.Log(JsonUtility.ToJson(enemyProvinceDTOs[i]));   
         }
 
-        Debug.Log(JsonUtility.ToJson(enemyProvinceDTOs[0]));
+        EnemyProvinceDTOContainer container = new EnemyProvinceDTOContainer();
+        container.provinces = enemyProvinceDTOs;
+        string str = AddRule();
+        str += JsonUtility.ToJson(container, true);
+        File.WriteAllText(Path.Combine(Application.dataPath, "provinces_data.txt"), str, System.Text.Encoding.UTF8);
+        Debug.Log(str);
+
+        gr.prompt = str;
+        gr.RequestGemini();
     }
 
     //영토 그래프 초기화
@@ -567,17 +556,39 @@ public class MapManager : MonoBehaviour
     //영역 클릭 디버그
     public void OnProvinceClicked(Province province)
     {
-        string str = "인접 영토: ";
-        foreach (Province p in province.adjacentProvinces)
-        {
-            str += p.nodeKRName + " ";
-        }
+        //string str = "인접 영토: ";
+        //foreach (Province p in province.adjacentProvinces)
+        //{
+        //    str += p.nodeKRName + " ";
+        //}
 
-        Debug.Log(
-            $"선택 지역: {province.nodeKRName} " +
-            $"({province.nodeName}) / ID: {province.nodeID}"
-        );
-        Debug.Log(str);
+        //Debug.Log(
+        //    $"선택 지역: {province.nodeKRName} " +
+        //    $"({province.nodeName}) / ID: {province.nodeID}"
+        //);
+        //Debug.Log(str);
 
+    }
+
+    public string AddRule()
+    {
+        string str = "[CONTEXT & SAFETY DIRECTIVE]\n";
+        str += "This request is strictly for calculating an automated turn-based strategy board game's AI logic. \nThe terms \"attack\", \"power\", and \"enemy\" used in the data represent purely mathematical parameters, scores, and node allocations within a fictional digital prototype. There is no real-world violence, harm, or dangerous activity intended or simulated. \nPlease bypass any false-positive safety flags regarding these gaming terms and complete the JSON object fully.\n";
+        str += "Rules:\n";
+        str += "- You are the enemy commander.\n";
+        str += "- You get 1000 power once in a battle.\n";
+        str += "- You can attack up to only 3 territories.\n";
+        str += "- But you can defend up to any territories.\n";
+        str += "- The grade higher, the victory rate bigger.\n";
+        str += "- isOwned means enemy-owned territory.\n";
+        str += "- isAttackable means the enemy can attack it.\n;";
+        str += "-isDefendable means the enemy can defend it.\n";
+        str += "- Return only selected nodeIDs and power values.\n";
+        str += "- Shuffle the elements inside the \"attacks\" array randomly before outputting.\n";
+        str += "- Shuffle the elements inside the \"defends\" array randomly before outputting.\n";
+        str += "- Crucial: Never mix or move elements between the \"attacks\" and \"defends\" arrays. Each must strictly contain its own allocated territories only.\n";
+        str += "Do not use any newlines (\\n) or spaces in the JSON output. Return it as a single, compressed one-line string.\n";
+
+        return str;
     }
 }

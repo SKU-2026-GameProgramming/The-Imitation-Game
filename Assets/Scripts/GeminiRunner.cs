@@ -1,113 +1,112 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json; // Newtonsoft 추가
 
-/// <summary>
-/// 플레이 모드에서 <see cref="GeminiApiClient"/>를 간단히 호출해 보는 데모용 컴포넌트입니다.
-/// </summary>
-/// <remarks>
-/// 같은 게임 오브젝트에 <see cref="GeminiApiClient"/>가 필요하며, 시작 시 자동 실행하거나 지정된 키 입력으로 요청을 보낼 수 있습니다.
-/// </remarks>
+// --- JSON 파싱을 위한 클래스 구조 정의 ---
+[Serializable]
+public class ActionData
+{
+    public int nodeID;
+    public int power;
+}
+
+[Serializable]
+public class GeminiResponse
+{
+    public List<ActionData> attacks = new List<ActionData>();
+    public List<ActionData> defends = new List<ActionData>();
+}
+// ---------------------------------------
+
 [RequireComponent(typeof(GeminiApiClient))]
 public sealed class GeminiRunner : MonoBehaviour
 {
-    /// <summary>
-    /// Gemini에 전달할 프롬프트 문장입니다.
-    /// </summary>
     [Header("Prompt")]
-    [Tooltip("프롬프트")]
     [TextArea(3, 8)]
-    [SerializeField] private string prompt = "Write one short NPC line in Korean for a Unity demo project.";
+    [SerializeField] public string prompt;
 
-    /// <summary>
-    /// 게임 시작과 동시에 Gemini 요청을 실행할지 여부입니다.
-    /// </summary>
     [Header("Controls")]
-    [Tooltip("게임 실행과 동시에 API 호출 여부")]
     [SerializeField] private bool runOnStart;
+    [SerializeField] private KeyCode triggerKey;
 
-    /// <summary>
-    /// Gemini 요청을 실행하는 입력 키입니다.
-    /// </summary>
-    /// <remarks>
-    /// 기본값은 <see cref="KeyCode.G"/>이며, <see cref="KeyCode.None"/>으로 설정하면 키 입력 실행이 비활성화됩니다.
-    /// </remarks>
-    [Tooltip("Gemini를 호출하는 키 입력값. KeyCode.None으로 설정하면 키 입력 실행이 비활성화.")]
-    [SerializeField] private KeyCode triggerKey = KeyCode.G;
+    [Header("UI Controls")]
+    // ★ 유니티 캔버스(Canvas) 내부의 화면을 가릴 패널 오브젝트를 여기에 드래그 앤 드롭 하세요.
+    [Tooltip("AI 연산 중 플레이어 조작을 막을 UI 패널")]
+    [SerializeField] private GameObject blockingPanel;
 
-    /// <summary>
-    /// 현재 Gemini 요청이 진행 중인지 나타냅니다.
-    /// </summary>
+    public GeminiApiClient _geminiApiClient;
     private bool _isRequesting;
 
-    /// <summary>
-    /// Gemini API 호출을 담당하는 클라이언트 컴포넌트입니다.
-    /// </summary>
-    private GeminiApiClient _geminiApiClient;
+    // ★ 다른 스크립트(예: TurnManager)가 구독할 이벤트
+    // 파싱이 완료된 GeminiResponse 객체를 통째로 넘겨줍니다.
+    public event Action<GeminiResponse> OnResponseParsed;
 
-    /// <summary>
-    /// 같은 게임 오브젝트에 연결된 <see cref="GeminiApiClient"/> 참조를 초기화합니다.
-    /// </summary>
-    private void Awake()
-    {
-        _geminiApiClient = GetComponent<GeminiApiClient>();
-    }
-
-    /// <summary>
-    /// 설정에 따라 플레이 시작 시 Gemini 요청을 실행합니다.
-    /// </summary>
     private void Start()
     {
-        if (runOnStart)
-        {
-            RequestGemini();
-        }
+        if (runOnStart) RequestGemini();
     }
 
-    /// <summary>
-    /// 매 프레임 지정된 트리거 키 입력을 확인하고 Gemini 요청을 실행합니다.
-    /// </summary>
     private void Update()
     {
-        if (triggerKey != KeyCode.None && Input.GetKeyDown(triggerKey))
-        {
-            RequestGemini();
-        }
+        
     }
 
-    /// <summary>
-    /// 현재 프롬프트를 사용해 Gemini 콘텐츠 생성을 요청합니다.
-    /// </summary>
-    /// <remarks>
-    /// 이미 요청이 진행 중이면 중복 요청을 보내지 않습니다. Unity Inspector의 컨텍스트 메뉴에서도 호출할 수 있습니다.
-    /// </remarks>
     [ContextMenu("Request Gemini")]
     public void RequestGemini()
     {
-        if (_isRequesting)
-        {
-            Debug.Log("응답 대기 중", this);
-            return;
-        }
+        if (_isRequesting) return;
 
         _isRequesting = true;
+
+        // 1. 구글 서버에 요청하기 직전에 화면 가리기 패널 활성화!
+        if (blockingPanel != null)
+        {
+            blockingPanel.SetActive(true);
+        }
+
         _geminiApiClient.GenerateContent(prompt, HandleSuccess, HandleError);
     }
 
-    /// <summary>
-    /// Gemini 요청이 성공했을 때 호출되는 콜백입니다.
-    /// </summary>
-    /// <param name="responseText">Gemini API가 반환한 응답 텍스트입니다.</param>
     private void HandleSuccess(string responseText)
     {
+        if (blockingPanel != null)
+        {
+            blockingPanel.SetActive(false);
+        }
+
         _isRequesting = false;
-        Debug.Log($"Gemini 응답:\n{responseText}", this);
+
+        // 파일 저장은 백업용으로 유지
+        File.WriteAllText(Path.Combine(Application.dataPath, "Gemini_response.txt"), responseText, System.Text.Encoding.UTF8);
+
+        try
+        {
+            // 1. Newtonsoft.Json으로 유니티 객체화
+            GeminiResponse parsedData = JsonConvert.DeserializeObject<GeminiResponse>(responseText);
+
+            if (parsedData != null)
+            {
+                Debug.Log($"[GeminiRunner] 파싱 성공! 공격 노드 개수: {parsedData.attacks.Count}");
+
+                // 2. 이 이벤트를 기다리고 있는 다른 게임 스크립트들에게 데이터 토스!
+                OnResponseParsed?.Invoke(parsedData);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[GeminiRunner] JSON 파싱 실패: {ex.Message}\n원본: {responseText}");
+        }
     }
 
-    /// <summary>
-    /// Gemini 요청이 실패했을 때 호출되는 콜백입니다.
-    /// </summary>
-    /// <param name="error">실패 원인 또는 오류 메시지입니다.</param>
     private void HandleError(string error)
     {
+        if (blockingPanel != null)
+        {
+            blockingPanel.SetActive(false);
+        }
+
         _isRequesting = false;
         Debug.LogError($"Gemini 요청 실패: {error}", this);
     }

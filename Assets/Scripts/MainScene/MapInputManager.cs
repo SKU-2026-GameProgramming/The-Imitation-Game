@@ -13,6 +13,7 @@ public class ProvinceClickHandler : MonoBehaviour
     RectTransform provinceUI;
     TextMeshProUGUI krName;
     TextMeshProUGUI engName;
+    TextMeshProUGUI grade;
     TextMeshProUGUI powText;
     TMP_InputField powInputField;
     Button allocateButton;
@@ -22,6 +23,7 @@ public class ProvinceClickHandler : MonoBehaviour
         provinceUI = GameObject.Find("ProvinceUI").GetComponent<RectTransform>();
         krName = GameObject.Find("KRNameText").GetComponent<TextMeshProUGUI>();
         engName = GameObject.Find("NameText").GetComponent<TextMeshProUGUI>();
+        grade = GameObject.Find("GradeText").GetComponent<TextMeshProUGUI> ();
         powText = GameObject.Find("PowerText").GetComponent<TextMeshProUGUI>() ;
         powInputField = GameObject.Find("PowerInput").GetComponent<TMP_InputField>();
         allocateButton = GameObject.Find("AllocateButton").GetComponent<Button>();
@@ -77,21 +79,30 @@ public class ProvinceClickHandler : MonoBehaviour
 
         krName.text = province.nodeKRName;
         engName.text = province.nodeName;
+        grade.text = province.grade;
+
+        if (grade.text == "S")
+            grade.color = Color.red;
+        else if (grade.text == "A")
+            grade.color = Color.blue;
+        else if (grade.text == "B")
+            grade.color = Color.green;
+        else if (grade.text == "C")
+            grade.color = Color.black;
 
         if (province.allocatable)
         {
-            powInputField.gameObject.SetActive(true);
+            if (province.isAttackable)
+                powText.text = "공격 병력";
+            else
+                powText.text = "방어 병력";
+                powInputField.gameObject.SetActive(true);
             allocateButton.gameObject.SetActive(true);
             powInputField.text = province.power.ToString();
-
-            if (province.isAttackable)
-                powText.text = "공격 병력: ";
-            else
-                powText.text = "방어 병력: ";
         }
         else
         {
-            
+
             powText.text = "";
             powInputField.gameObject.SetActive(false);
             allocateButton.gameObject.SetActive(false);
