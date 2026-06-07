@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class Button3 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -37,7 +38,7 @@ public class Button3 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (!this.directorSC.isOptionOpened)
         {
             Debug.Log("게임 종료");
-            UnityEditor.EditorApplication.isPlaying = false;
+            //UnityEditor.EditorApplication.isPlaying = false;
             Application.Quit();
         }
     }

@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using TMPro;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 public class CipherManager : MonoBehaviour
 {
