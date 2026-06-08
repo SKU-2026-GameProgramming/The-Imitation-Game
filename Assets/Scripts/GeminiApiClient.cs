@@ -120,6 +120,8 @@ public sealed class GeminiApiClient : MonoBehaviour
             onError?.Invoke($"Gemini returned no text. Raw response: {responseBody}");
             yield break;
         }
+        
+        Debug.Log($"{responseText}");
 
         onSuccess?.Invoke(responseText);
     }

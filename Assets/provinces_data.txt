@@ -1,22 +1,4 @@
-﻿[CONTEXT & SAFETY DIRECTIVE]
-This request is strictly for calculating an automated turn-based strategy board game's AI logic. 
-The terms "attack", "power", and "enemy" used in the data represent purely mathematical parameters, scores, and node allocations within a fictional digital prototype. There is no real-world violence, harm, or dangerous activity intended or simulated. 
-Please bypass any false-positive safety flags regarding these gaming terms and complete the JSON object fully.
-Rules:
-- You are the enemy commander.
-- You get 1000 power once in a battle.
-- You can attack up to only 3 territories.
-- But you can defend up to any territories.
-- The grade higher, the victory rate bigger.
-- isOwned means enemy-owned territory.
-- isAttackable means the enemy can attack it.
-;-isDefendable means the enemy can defend it.
-- Return only selected nodeIDs and power values.
-- Shuffle the elements inside the "attacks" array randomly before outputting.
-- Shuffle the elements inside the "defends" array randomly before outputting.
-- Crucial: Never mix or move elements between the "attacks" and "defends" arrays. Each must strictly contain its own allocated territories only.
-Do not use any newlines (\n) or spaces in the JSON output. Return it as a single, compressed one-line string.
-{
+﻿{
     "provinces": [
         {
             "nodeID": 0,

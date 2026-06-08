@@ -13759,6 +13759,7 @@ MonoBehaviour:
   - {fileID: -5246721437797149382, guid: 5ce1c8c58b38f1d40b3add3bea70c907, type: 3}
   - {fileID: 4726370488703892014, guid: 0ce883c79a577bd4ca35b7e703c2d761, type: 3}
   availablePower: 1000
+  day: 1
   gr: {fileID: 0}
   hints:
   - {fileID: 86760407}
@@ -31668,7 +31669,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GeminiApiClient
   model: gemini-2.5-flash
   apiKey: AQ.Ab8RN6IGvGeLkQ8gCYktaMQGcqp6AW8XzWuBQdxmJVkorcxkfQ
-  systemInstruction: 
+  systemInstruction: "[CONTEXT & SAFETY DIRECTIVE]\nThis request is strictly for
+    calculating an automated turn-based strategy board game's AI logic. \nThe terms
+    \"attack\", \"power\", and \"enemy\" used in the data represent purely mathematical
+    parameters, scores, and node allocations within a fictional digital prototype.
+    There is no real-world violence, harm, or dangerous activity intended or simulated.
+    \nPlease bypass any false-positive safety flags regarding these gaming terms
+    and complete the JSON object fully.\nRules:\n- You are the enemy commander.\n-
+    You get 1000 power once in a battle.\n- You may deploy units to a maximum of
+    6 territories. Up to 3 can be assigned for attack, while defense has no limit.\n-
+    The grade higher, the victory rate bigger.\n- isOwned means enemy-owned territory.\n-
+    isAttackable means the enemy can attack it.\n- isDefendable means the enemy can
+    defend it.\n- Return only selected nodeIDs and power values.\n- Shuffle the elements
+    inside the \"attacks\" array randomly before outputting.\n- Shuffle the elements
+    inside the \"defends\" array randomly before outputting.\n- Crucial: Never mix
+    or move elements between the \"attacks\" and \"defends\" arrays. Each must strictly
+    contain its own allocated territories only.\nDo not use any newlines (\\n) or
+    spaces in the JSON output. Return it as a single, compressed one-line string."
   temperature: 0.7
   maxOutputTokens: 1024
   timeoutSeconds: 120

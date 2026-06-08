@@ -306,8 +306,9 @@ public class MapManager : MonoBehaviour
 
         EnemyProvinceDTOContainer container = new EnemyProvinceDTOContainer();
         container.provinces = enemyProvinceDTOs;
-        string str = AddRule();
-        str += JsonUtility.ToJson(container, true);
+        // string str = AddRule();
+        // str += JsonUtility.ToJson(container, true);
+        string str = JsonUtility.ToJson(container, true);
         File.WriteAllText(Path.Combine(Application.dataPath, "provinces_data.txt"), str, System.Text.Encoding.UTF8);
         Debug.Log(str);
 

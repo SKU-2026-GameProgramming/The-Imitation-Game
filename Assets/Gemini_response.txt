@@ -1,1 +1,1 @@
-﻿{"attacks":[{"nodeID":14,"power":150},{"nodeID":8,"power":200},{"nodeID":15,"power":150}],"defends":[{"nodeID":21,"power":100},{"nodeID":17,"power":50},{"nodeID":28,"power":100},{"nodeID":16,"power":100},{"nodeID":23,"power":50},{"nodeID":22,"power":100}]}
+﻿{"attacks":[{"nodeID":14,"power":165},{"nodeID":15,"power":165},{"nodeID":8,"power":170}],"defends":[{"nodeID":21,"power":165},{"nodeID":22,"power":165},{"nodeID":16,"power":170}]}
