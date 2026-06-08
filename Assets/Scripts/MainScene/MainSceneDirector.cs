@@ -7,6 +7,7 @@ public class MainSceneDirector : MonoBehaviour
 
     GameObject optionPaper;
     RectTransform optionPaperTf;
+    GameObject panel;
 
     public bool isUIOpened = false;
     public bool isShifterOpened = false;
@@ -19,12 +20,12 @@ public class MainSceneDirector : MonoBehaviour
         Application.targetFrameRate = 60;
 
         this.bgm = GetComponent<AudioSource>();
-        this.bgm.Play();
+        bgm.Play();
     }
 
     // Update is called once per frame
     void Update()
     {
-        this.time += Time.deltaTime;
+       
     }
 }

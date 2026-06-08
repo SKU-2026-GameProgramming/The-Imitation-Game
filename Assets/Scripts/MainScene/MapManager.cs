@@ -29,12 +29,14 @@ public class MapManager : MonoBehaviour
     GameObject remainingAttackText;
     public GameObject[] hints = new GameObject[3];
     TextMeshProUGUI dayText;
+    TextMeshProUGUI panelText;
 
     private void Awake()
     {
         cm = GameObject.Find("CipherUI").GetComponent<CipherManager>();
         gr = GameObject.Find("AI_API_Director").GetComponent<GeminiRunner>();
         dayText = GameObject.Find("DayText").GetComponent<TextMeshProUGUI>();
+        panelText = GameObject.Find("PanelText").GetComponent<TextMeshProUGUI>();
         powerText = GameObject.Find("AllPowerText");
         remainingAttackText = GameObject.Find("RemainingAttackText");
 
@@ -55,18 +57,33 @@ public class MapManager : MonoBehaviour
 
     public void ConfirmBattle()
     {
+        day++;
+        dayText.text = "Day " + day.ToString();
+        if (day >= 5)
+        {
+            dayText.text = "";
+            panelText.text = "";
+            
+            int sum = 0;
+            foreach (Province p in provinces)
+            {
+                if (p.isOwned)
+                    sum += p.importance;
+            }
+
+            if (sum >= 2750 / 2)
+                SceneManager.LoadScene("VictoryScene");
+            else
+                SceneManager.LoadScene("DefeatScene");
+        }
+        else
+        {
+            hints[day - 2].gameObject.SetActive(true);
+        }
+
         ResolveBattle();
         ResetState();
         UpdateProvincesState();
-        day++;
-        dayText.text = "Day " + day.ToString();
-        hints[day - 2].gameObject.SetActive(true);
-
-        if(day >= 4)
-        {
-            SceneManager.LoadScene("EndingScene");
-        }
-            
         UpdateDTO();
     }
 

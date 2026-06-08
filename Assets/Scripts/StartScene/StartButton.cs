@@ -38,7 +38,7 @@ public class Button1 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (!this.directorSC.isOptionOpened)
         {
             Debug.Log("게임 시작");
-            SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene("IntroScene");
         }
     }
 }
