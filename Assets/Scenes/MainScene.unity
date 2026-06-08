@@ -2252,7 +2252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -365, y: -11}
+  m_AnchoredPosition: {x: -380, y: -11}
   m_SizeDelta: {x: 538.2977, y: 114.0381}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &86760409
@@ -3201,9 +3201,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC801\uC774 \uC791\uC804 \uC218\uD589 \uC9C0\uC5ED\uC744 \uC554\uD638\uD654\uD574\uC11C
-    \uC18C\uD1B5\uD558\uAE30 \uC2DC\uC791\uD588\uB2E4. \uD558\uC9C0\uB9CC \uC774\n\uC54C\uD30C\uBCB3\uB4E4
-    \uC9C0\uB3C4\uC5D0\uC11C \uBCF8\uB4EF\uD55C\uB370..?"
+  m_text: "Day\uB3C5\uC77C\uAD70\uC774 \uBB34\uC120 \uC8FC\uD30C\uC218\uB97C \n\uC554\uD638\uD654\uD574
+    \uB300\uADDC\uBAA8 \uC18C\uD0D5 \uC791\uC804\uC744 \n\uAC1C\uC2DC\uD588\uB2E4.
+    \n\uBB34\uC791\uC704\uB85C \uC11E\uC778 \uC774 \uC54C\uD30C\uBCB3\uB4E4...\n\uC791\uC804
+    \uC9C0\uB3C4\uC0C1\uC758 \uC9C0\uBA85\uB4E4\uACFC \n\uBE44\uC2B7\uD55C\uAC83
+    \uAC19\uC740\uB370..."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
   m_sharedMaterial: {fileID: 4396105529309792807, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
@@ -3451,7 +3453,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 336.56393, y: -3}
+  m_AnchoredPosition: {x: 329, y: 24}
   m_SizeDelta: {x: 538.2977, y: 114.0381}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &149407637
@@ -11228,10 +11230,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uAE30\uACC4\uB97C \uB3CC\uB824\uBD10\uB3C4 \uC801\uC758 \uC791\uC804
-    \uC9C0\uC5ED\uC774 \uBC14\uB85C \uB098\uC624\uC9C4 \uC54A\uB294\uB2E4. \uADF8\uB798\uB3C4
-    \uAE30\uACC4\uB97C \uB3CC\uB9AC\uBA74 \uC775\uC219\uD55C \uC54C\uD30C\uBCB3\uC774
-    \uB098\uC624\uAE34 \uD558\uB294 \uAC83 \uAC19\uB2E4. "
+  m_text: "\uD574\uB3C5\uAE30\uB97C \uC0AC\uC6A9\uD574\uB3C4 \uBC14\uB85C \uC801\uC758
+    \n\uC791\uC804\uC9C0\uC5ED\uC774 \uB3C4\uCD9C\uB418\uC9C4 \uC54A\uB294\uB2E4
+    \n\uD558\uC9C0\uB9CC \uC554\uD638\uB97C \uC22B\uC790\uB9CC\uD07C \n\uC2DC\uD504\uD2B8\uD558\uC790
+    \uC775\uC219\uD55C \uC9C0\uBA85\uB4E4\uC774 \n\uB098\uC624\uB294\uAC83 \uAC19\uB2E4."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
   m_sharedMaterial: {fileID: 4396105529309792807, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
@@ -11992,11 +11994,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uBD84\uBA85\uD788 \uC801\uC740 \uC790\uC2E0\uB4E4\uC758 \uC554\uD638\uAC00
-    \uB3C4\uCCAD\uB2F9\uD55C\uAC78 \uC544\uB294 \uAC83 \uAC19\uB2E4. \uC774\uC81C
-    '\uAD6C\uCCB4\uC801\uC778 \uC22B\uC790' \uB300\uC2E0 '\uB2E8\uC21C\uD55C \uC22B\uC790'\uB9CC
-    \uC801\uD600\uC788\uB2E4. \uADF8\uAC83 \uB9CC\uC73C\uB85C \uC77C\uB2E8 \uC801\uC774
-    \uD22C\uC785\uD560 \uBCD1\uB825\uC744 \uD30C\uC545\uD574\uBCF4\uC790."
+  m_text: "\uC554\uD638\uAC00 \uB3C4\uCCAD\uB2F9\uD558\uACE0 \uC788\uB2E4\uB294 \uC0AC\uC2E4\uC744
+    \n\uB208\uCE58\uCC44\uACE0 \uC22B\uC790 \uC554\uD638\uCCB4\uACC4\uB97C \n\uBC14\uAFBC\uAC83
+    \uAC19\uB2E4 \uD558\uD544 \uBC99\uCEE4\uC758 \uBB3C\uC790\uAC00 \n\uBC14\uB2E5\uB098
+    \uACB0\uC804\uC758 \uB0A0\uC5D0 \uC774\uB7F0 \uBCC0\uC218\uAC00 \n\uC0DD\uAE30\uB2E4\uB2C8
+    \uD558\uC9C0\uB9CC \uBB3C\uB7EC\uC124\uACF3\uC740 \uC5C6\uB2E4.\n\uB2E8 \uD55C\uBC88\uC758
+    \uC804\uD22C\uB85C \uC774 \uC804\uC7C1\uC740 \n\uC885\uC9C0\uBD80\uB97C \uB9DE\uC774\uD560\uAC83\uC774\uB2E4."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
   m_sharedMaterial: {fileID: 4396105529309792807, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
@@ -13759,6 +13762,7 @@ MonoBehaviour:
   - {fileID: -5246721437797149382, guid: 5ce1c8c58b38f1d40b3add3bea70c907, type: 3}
   - {fileID: 4726370488703892014, guid: 0ce883c79a577bd4ca35b7e703c2d761, type: 3}
   availablePower: 1000
+  day: 1
   gr: {fileID: 0}
   hints:
   - {fileID: 86760407}
@@ -16462,7 +16466,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 336.56, y: 303}
+  m_AnchoredPosition: {x: 336.56, y: 387}
   m_SizeDelta: {x: 538.2977, y: 114.0381}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1024046730
@@ -22736,7 +22740,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -363, y: 303}
+  m_AnchoredPosition: {x: -363, y: 385}
   m_SizeDelta: {x: 538.2977, y: 114.0381}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1394212765
@@ -32644,11 +32648,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC774\uC81C \uC368\uC838\uC788\uB294 \uC54C\uD30C\uBCB3\uC73C\uB85C\uB294
-    \uC5B4\uB514\uC778\uC9C0 \uBC14\uB85C \uD30C\uC545\uC774 \uC548\uB41C\uB2E4.
-    \uC554\uD638\uC9C0 \uC6B0\uD558\uB2E8\uC5D0 \uC368\uC9C4 6\uAC1C\uC758 \uC22B\uC790\uC758
-    \uC758\uBBF8\uAC00 \uBB58\uAE4C? \uC774\uBC88\uC5D0 \uC0C8\uB85C \uB4E4\uC5EC\uC628
-    \n'\uAE30\uACC4'\uB97C \uC4F8 \uB54C\uAC00 \uC628 \uAC83 \uAC19\uB2E4."
+  m_text: "\uB2E8\uC21C\uD788 \uC554\uD638\uBB38\uACFC \uC9C0\uBA85\uC744 \uB300\uC870\uD558\uB294\uAC83\uB9CC\uC73C\uB85C\uB294
+    \uC54C\uC218\uC5C6\uAC8C \uB410\uB2E4. \n\uC554\uD638\uC9C0 \uD558\uB2E8\uC5D0
+    \uC801\uD78C \uC22B\uC790 6\uAC1C \n\uC774\uBC88\uC5D0 \uBCF4\uAE09\uBC1B\uC740
+    \uC554\uD638\uD574\uB3C5\uAE30\uB97C \n\uC4F8\uB54C\uAC00 \uC628\uAC83\uAC19\uB2E4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
   m_sharedMaterial: {fileID: 4396105529309792807, guid: 5b1ab20a08b9cc84da6c6597d64e12e0, type: 2}
