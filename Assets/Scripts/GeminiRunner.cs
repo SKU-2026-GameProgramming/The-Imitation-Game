@@ -81,8 +81,8 @@ public sealed class GeminiRunner : MonoBehaviour
         // 파일 저장은 백업용으로 유지
         File.WriteAllText(Path.Combine(Application.dataPath, "Gemini_response.txt"), responseText, System.Text.Encoding.UTF8);
 
-        try
-        {
+        //try
+        //{
             // 1. Newtonsoft.Json으로 유니티 객체화
             GeminiResponse parsedData = JsonConvert.DeserializeObject<GeminiResponse>(responseText);
 
@@ -93,11 +93,15 @@ public sealed class GeminiRunner : MonoBehaviour
                 // 2. 이 이벤트를 기다리고 있는 다른 게임 스크립트들에게 데이터 토스!
                 OnResponseParsed?.Invoke(parsedData);
             }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[GeminiRunner] JSON 파싱 실패: {ex.Message}\n원본: {responseText}");
-        }
+            else
+            {
+                Debug.Log(parsedData);
+            }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Debug.LogError($"[GeminiRunner] JSON 파싱 실패: {ex.Message}\n원본: {responseText}");
+        //}
     }
 
     private void HandleError(string error)

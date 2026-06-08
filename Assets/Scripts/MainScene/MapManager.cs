@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MapManager : MonoBehaviour
@@ -16,7 +17,7 @@ public class MapManager : MonoBehaviour
     public bool graphInitialized = false; //그래프 초기화 여부
     public Sprite[] sprites = new Sprite[4];  //영토 상태 스프라이트 
     public int availablePower = 1000;
-    int day = 1;
+    public int day = 1;
     int maxPlayerAttack;
     int remainingAttack;
 
@@ -60,6 +61,12 @@ public class MapManager : MonoBehaviour
         day++;
         dayText.text = "Day " + day.ToString();
         hints[day - 2].gameObject.SetActive(true);
+
+        if(day >= 4)
+        {
+            SceneManager.LoadScene("EndingScene");
+        }
+            
         UpdateDTO();
     }
 
@@ -132,21 +139,37 @@ public class MapManager : MonoBehaviour
         availablePower -= delta;
         pch.province.power = p;
 
+        SpriteRenderer flag = pch.province.GetFlag();
         if (pch.province.isAttackable)
         {
             if (p > 0 && !pch.province.isSelected)
             {
                 remainingAttack--;
+                flag.sprite = sprites[2];
                 pch.province.isSelected = true;
             }
             else if(p <= 0 && pch.province.isSelected)
             {
                 remainingAttack++;
+                flag.sprite = sprites[0];
                 pch.province.isSelected = false;   
             }
         }
+        else if (pch.province.isDefendable)
+        {
+            if (p > 0 && !pch.province.isSelected)
+            {
+                flag.sprite = sprites[3];
+                pch.province.isSelected = true;
+            }
+            else if (p <= 0 && pch.province.isSelected)
+            {
+                flag.sprite = sprites[1];
+                pch.province.isSelected = false;
+            }
+        }
 
-        return true;
+            return true;
     }
 
     //전투 실행
@@ -240,25 +263,9 @@ public class MapManager : MonoBehaviour
         {
             SpriteRenderer flag = p.GetFlag();
             if (p.isOwned)
-            {
-                if (p.isDefendable)
-                    flag.sprite = sprites[3];
-                else
-                    flag.sprite = sprites[1];
-
-            }
+                flag.sprite = sprites[1];
             else
-            {
-                if (p.isAttackable)
-                {
-                    flag.sprite = sprites[2];
-                }
-                else
-                {
-                    flag.sprite = sprites[0];
-                }
-            }
-
+                flag.sprite = sprites[0];
         }
     }
 

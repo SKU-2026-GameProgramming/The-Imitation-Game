@@ -10,6 +10,7 @@ public class CipherManager : MonoBehaviour
     public TextMeshProUGUI[] cipherTexts = new TextMeshProUGUI[6];
     public TextMeshProUGUI[] powerTexts = new TextMeshProUGUI[6];
     public TextMeshProUGUI[] keyTexts = new TextMeshProUGUI[6];
+    TextMeshProUGUI tiptext;
     public Province[] provinces;
     int day = 0;
 
@@ -18,12 +19,23 @@ public class CipherManager : MonoBehaviour
     void Start()
     {
         provinces = GameObject.Find("Provinces").GetComponent<MapManager>().provinces;
+        int sum = 0;
+        foreach(Province p in provinces)
+        {
+            sum += p.importance;
+        }
+        Debug.Log("sum " + sum);
+        tiptext = GameObject.Find("TipText").GetComponent<TextMeshProUGUI>(); 
     }
 
     public void Encrypt(GeminiResponse aiResult)
     {
         day++;
         Debug.Log("day" + day);
+        if (day < 2)
+            tiptext.text = "";
+        else if (day == 2)
+            tiptext.text = "암호를 클릭하면 시프트 기계를 열 수 있습니다.";
 
         if (aiResult == null)
         {

@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,8 +12,10 @@ public class CipherButtonManager : MonoBehaviour
     RectTransform shifter;
 
     MainSceneDirector director;
+    MapManager mm;
 
     public TextMeshProUGUI[] cipherChars = new TextMeshProUGUI[4];
+    
 
     AudioSource aud;
     public AudioClip clickSF;
@@ -26,6 +29,8 @@ public class CipherButtonManager : MonoBehaviour
         shifter = GameObject.Find("ShifterUI").GetComponent<RectTransform>();
 
         director = GameObject.Find("GameDirector").GetComponent<MainSceneDirector>();
+        mm = GameObject.Find("Provinces").GetComponent<MapManager>();
+
         aud = GetComponent<AudioSource>();
     }
 
@@ -67,7 +72,7 @@ public class CipherButtonManager : MonoBehaviour
 
         GameObject clickedButton = EventSystem.current.currentSelectedGameObject;
 
-        if (clickedButton != null)
+        if (clickedButton != null && mm.day >= 2 )
         {
             string cipher = clickedButton.GetComponentInChildren<TextMeshProUGUI>().text;
             for (int i = 0; i < 4; i++)
